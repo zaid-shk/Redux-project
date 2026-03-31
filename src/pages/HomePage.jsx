@@ -1,0 +1,28 @@
+import React from "react";
+
+import SearchBar from "../components/SearchBar";
+import { fetchGIF, fetchPhotos, fetchVideos } from "../api/mediaApi";
+import Tabs from "../components/Tabs";
+import ResultGrid from "../components/ResultGrid";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
+const HomePage = () => {
+  const { query } = useSelector((store) => store.search);
+  return (
+    <div>
+      <SearchBar />
+
+      {query != "" ? (
+        <div className="">
+          <Tabs />
+          <ResultGrid />
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+};
+
+export default HomePage;
