@@ -4,14 +4,14 @@ import {
   setLoading,
   setError,
   setResults,
+  setTotalPages,
 } from "../redux/features/searchSlice";
 import { useEffect } from "react";
 import ResultCard from "./ResultCard";
-// import ResultCard from './ResultCard'
 
 const ResultGrid = () => {
   const dispatch = useDispatch();
-  const { query, activeTab, results, loading, error } = useSelector(
+  const { query, activeTab, results, loading, error, page } = useSelector(
     (store) => store.search,
   );
 
@@ -23,7 +23,8 @@ const ResultGrid = () => {
           dispatch(setLoading());
           let data = [];
           if (activeTab == "photos") {
-            let response = await fetchPhotos(query);
+            let response = await fetchPhotos(query, page);
+            dispatch(setTotalPages(response.total_pages));
             data = response.results.map((item) => ({
               id: item.id,
               type: "photo",
@@ -34,8 +35,8 @@ const ResultGrid = () => {
             }));
           }
           if (activeTab == "videos") {
-            let response = await fetchVideos(query);
-
+            let response = await fetchVideos(query, page);
+            dispatch(setTotalPages(Math.ceil(response.total_results / 15)));
             data = response.videos.map((item) => ({
               id: item.id,
               type: "video",
@@ -47,7 +48,7 @@ const ResultGrid = () => {
           }
           if (activeTab == "gif") {
             let response = await fetchGIF(query);
-
+            dispatch(setTotalPages(1));
             data = response.data.results.map((item) => ({
               id: item.id,
               title: item.title || "GIF",
@@ -64,7 +65,7 @@ const ResultGrid = () => {
       };
       getData();
     },
-    [query, activeTab, dispatch],
+    [query, activeTab, page, dispatch],
   );
 
   if (error) return <h1>Error</h1>;

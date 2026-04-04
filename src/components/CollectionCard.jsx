@@ -1,42 +1,34 @@
-import { useDispatch, useSelector } from "react-redux"
-import CollectionCard from "../components/CollectionCard"
-import { clearCollection } from '../redux/features/collectionSlice'
+import { useDispatch } from 'react-redux';
+import { removeCollection, removeToast } from '../redux/features/collectionSlice';
 
+const CollectionCard = ({item}) => {
 
-const CollectionPage = () => {
+    const dispatch = useDispatch()
 
-  const collection = useSelector(state => state.collection.items)
-
-  const dispatch = useDispatch()
-
-  const clearAll = () => {
-
-    dispatch(clearCollection())
-  }
-
-  return (
-    <div className=" overflow-auto px-10 py-6">
-
-      {collection.length > 0 ? <div className="flex justify-between mb-6">
-        <h2 className="text-3xl font-medium">
-          Your Collection
-        </h2>
-        <button onClick={() => {
-          clearAll()
-        }} className="active:scale-95 transition cursor-pointer bg-red-600 px-8 py-3 text-lg font-medium rounded">Clear Collection</button>
-      </div> : <h2 className="text-5xl py-10 text-gray-300 text-center font-medium">
-        Collection is Empty
-      </h2>}
-
-      <div className='flex justify-start w-full flex-wrap gap-6'>
-        {collection.map((item, idx) => {
-          return <div key={idx}>
-            <CollectionCard item={item} />
-          </div>
-        })}
-      </div>
-    </div>
-  )
+    const removeFromCollection = (item)=>{
+        dispatch(removeCollection(item.id))
+        dispatch(removeToast())
+    }
+    return (
+        <div className='w-[18vw] relative h-80 bg-white rounded-xl overflow-hidden'>
+            <a target='_blank' className='h-full' href={item.url}>
+                {item.type == 'photo' ? <img className='h-full w-full object-cover object-center' src={item.src} alt="" /> : ''}
+                {item.type == 'video' ? <video className='h-full w-full object-cover object-center' autoPlay loop muted src={item.src}></video> : ''}
+                {item.type == 'gif' ? <img className='h-full w-full object-cover object-center' src={item.src} alt="" /> : ''}
+            </a>
+            <div id='bottom' className='flex justify-between gap-3 items-center w-full px-4 py-6 absolute bottom-0 text-white'>
+                <h2 className='text-lg font-semibold capitalize h-14 overflow-hidden'>{item.title}</h2>
+                <button
+                    onClick={() => {
+                        removeFromCollection(item)
+                    }}
+                    className='bg-indigo-600 active:scale-95 text-white rounded px-3 py-1 cursor-pointer font-medium'
+                >
+                    Remove
+                </button>
+            </div>
+        </div>
+    )
 }
 
-export default CollectionPage 
+export default CollectionCard

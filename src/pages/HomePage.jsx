@@ -6,6 +6,7 @@ import Tabs from "../components/Tabs";
 import ResultGrid from "../components/ResultGrid";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Pagination from "../components/Pagination";
 
 const HomePage = () => {
   const { query } = useSelector((store) => store.search);
@@ -17,6 +18,7 @@ const HomePage = () => {
         <div className="">
           <Tabs />
           <ResultGrid />
+          <Pagination/>
         </div>
       ) : (
         ""
